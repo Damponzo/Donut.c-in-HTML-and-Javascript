@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Rotating ASCII Art</title>
+    <style>
+        body {
+            font-family: monospace;
+            white-space: pre;
+            background-color: black;
+            color: white;
+            margin: 0;
+            padding: 0;
+        }
+        #output {
+            white-space: pre;
+            line-height: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div id="output"></div>
+    <script>
+        let A = 0, B = 0; // Rotation angles
+        const width = 80, height = 22; // Screen size
+        const output = document.getElementById('output');
+        
+        function renderFrame() {
+            let b = Array(width * height).fill(' '); // Frame buffer
+            let z = Array(width * height).fill(0); // Depth buffer
+
+            for (let j = 0; j < 6.28; j += 0.07) {
+                for (let i = 0; i < 6.28; i += 0.02) {
+                    let sini = Math.sin(i),
+                        cosj = Math.cos(j),
+                        sinA = Math.sin(A),
+                        sinj = Math.sin(j),
+                        cosA = Math.cos(A),
+                        cosj2 = cosj + 2,
+                        mess = 1 / (sini * cosj2 * sinA + sinj * cosA + 5),
+                        cosi = Math.cos(i),
+                        cosB = Math.cos(B),
+                        sinB = Math.sin(B),
+                        t = sini * cosj2 * cosA - sinj * sinA;
+
+                    let x = Math.floor(40 + 30 * mess * (cosi * cosj2 * cosB - t * sinB)),
+                        y = Math.floor(12 + 15 * mess * (cosi * cosj2 * sinB + t * cosB)),
+                        o = x + 80 * y,
+                        N = Math.floor(8 * ((sinj * sinA - sini * cosj * cosA) * cosB - sini * cosj * sinA - sinj * cosA - cosi * cosj * sinB));
+
+                    if (y > 0 && y < height && x > 0 && x < width && mess > z[o]) {
+                        z[o] = mess;
+                        b[o] = ".,-~:;=!*#$@"[N > 0 ? N : 0];
+                    }
+                }
+            }
+
+            output.textContent = b.reduce((acc, char, index) => {
+                if (index % width === 0 && index !== 0) acc += '\n';
+                acc += char;
+                return acc;
+            }, '');
+        }
+
+        function animate() {
+            renderFrame();
+            A += 0.04;
+            B += 0.02;
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+    </script>
+</body>
+</html>
