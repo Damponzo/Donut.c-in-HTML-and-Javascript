@@ -11,5 +11,5 @@ Credits to
 
 a1k0n (for making the original code)
 Damponzo (me)
-The guy who made the donut.c Wii Port that inspired me to make this 
+and The guy who made the donut.c Wii Port that inspired me to make this 
 https://www.a1k0n.net/
